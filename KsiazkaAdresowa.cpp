@@ -156,7 +156,7 @@ void wyszukajOsobe(vector <Adresat> &adresaci)
     string imie, nazwisko;
     char wybor;
 
-    system("clear");
+    system("cls");
       cout << "Wyszukiwanie osob" << endl << endl;
       cout << "1. Wyszukiwanie osób po imieniu" << endl;
       cout << "2. Wyszukiwanie osób po nazwisku" << endl << endl;
@@ -164,7 +164,7 @@ void wyszukajOsobe(vector <Adresat> &adresaci)
       cin >> wybor;
     if (wybor == '1')
     {
-        system ("clear");
+        system ("cls");
         cout << "Podaj imię: ";
         cin >> imie;
 
@@ -197,7 +197,7 @@ void wyszukajOsobe(vector <Adresat> &adresaci)
 
     else if (wybor == '2')
     {
-        system ("clear");
+        system ("cls");
         cout << "Podaj nazwisko: ";
         cin >> nazwisko;
         
@@ -229,7 +229,7 @@ void wyszukajOsobe(vector <Adresat> &adresaci)
 
 void wyswietlKsiazkeAdresowa(const vector <Adresat> &adresaci)
 {
-  system ("clear");
+  system ("cls");
 
   if (adresaci.empty()) 
     {
@@ -278,7 +278,7 @@ void edytujAdresata(vector <Adresat> &adresaci)
     cout << "Podaj ID adresata, ktory ma zostac edytowany: ";
     cin >> id;
 
-        system("clear");
+        system("cls");
         cout << "Edycja wybranego adresata. Wybierz co edytowac:" << endl << endl;
         cout << "1. Imie." << endl;
         cout << "2. Nazwisko" << endl;
@@ -339,9 +339,9 @@ int main()
 
   while(true)
     {
-      system("clear");
+      system("cls");
       cout << "Ksiazka adresowa" << endl << endl;
-      cout << "1. Dodaj nową osobe" << endl;
+      cout << "1. Dodaj nowa osobe" << endl;
       cout << "2. Wyszukaj" << endl;
       cout << "3. Wyswietl wszystkie zapisane kontakty" << endl;
       cout << "4. Usun adresata" << endl;
