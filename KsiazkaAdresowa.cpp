@@ -71,10 +71,20 @@ void zapisanieKsiazkiDoPliku(const vector <Adresat> &adresaci)
   }
 }
 
-int dodanieOsobyDoKsiazkiAdresowej(vector <Adresat> &adresaci, int idOstatniejOsoby)
+void dodanieOsobyDoKsiazkiAdresowej(vector <Adresat> &adresaci)
 {
   Adresat adresat;
   string imie, nazwisko, nrTelefonu, email, adres;
+  system("cls");
+
+  if (adresaci.empty() == true)
+  {
+    adresat.id = 1;
+  }
+  else
+  {
+    adresat.id = adresaci.back().id + 1;
+  }
 
   cout << "Podaj imię: "; 
   adresat.imie = wczytajLinie();
@@ -86,15 +96,13 @@ int dodanieOsobyDoKsiazkiAdresowej(vector <Adresat> &adresaci, int idOstatniejOs
   adresat.email = wczytajLinie();
   cout << "Podaj adres: "; 
   adresat.adres = wczytajLinie();
-  adresat.id = idOstatniejOsoby + 1;
 
   adresaci.push_back(adresat);
 
-  zapisanieKsiazkiDoPliku(adresaci);
+  zapisanieKsiazkiDoPliku(adresaci); // moze nalezy tu wykonac funkcje dodania pojedynczego adresata do pliku - dodajAdresataDoPliku(adresat)
   
   cout << "Dodano do ksiazki adresowej" << endl;
   system("read");
-  return (idOstatniejOsoby + 1);
 }
 
 void wczytywanieZnajomychDoStruktury(vector <Adresat> &adresaci, const string& nazwaPliku)
@@ -329,7 +337,6 @@ int main()
 {
   vector <Adresat> adresaci;
   int idOsoby = 0;
-  int idOstatniejOsoby = 0;
   char wybor;
   string nazwaPliku = "Ksiazka_adresowa.txt";
   
@@ -354,7 +361,7 @@ int main()
       switch (wybor)
       {
         case '1':
-            idOstatniejOsoby = dodanieOsobyDoKsiazkiAdresowej(adresaci, idOstatniejOsoby);
+            dodanieOsobyDoKsiazkiAdresowej(adresaci);
             break;
         case '2':
             wyszukajOsobe(adresaci);
