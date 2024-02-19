@@ -235,7 +235,7 @@ void wyszukajOsobe(vector <Adresat> &adresaci)
     }
 }
 
-void wyswietlKsiazkeAdresowa(const vector <Adresat> &adresaci)
+void wyswietlKsiazkeAdresowa(vector <Adresat> &adresaci)
 {
   system ("cls");
 
@@ -281,13 +281,17 @@ void usunAdresataOPodanymId(vector <Adresat> &adresaci)
 
 void edytujAdresata(vector <Adresat> &adresaci)
 {
-    int id;
+    int idWybranegoAdresata;
     char wybor;
     cout << "Podaj ID adresata, ktory ma zostac edytowany: ";
-    cin >> id;
+    cin >> idWybranegoAdresata;
 
+    for (vector <Adresat> :: iterator itr = adresaci.begin(); itr != adresaci.end(); itr++)
+    {
+        if (itr -> id == idWybranegoAdresata)
+        {
         system("cls");
-        cout << "Edycja wybranego adresata. Wybierz co edytowac:" << endl << endl;
+        cout << "Edycja wybranego adresata. Wybierz dane do aktualizacji:" << endl << endl;
         cout << "1. Imie." << endl;
         cout << "2. Nazwisko" << endl;
         cout << "3. Numer telefonu" << endl;
@@ -302,23 +306,28 @@ void edytujAdresata(vector <Adresat> &adresaci)
             {
             case '1':
                 cout << "Podaj nowe imie: ";
-                cin >> adresaci[id - 1].imie;
+                itr -> imie =  wczytajLinie();
+                zapisanieKsiazkiDoPliku(adresaci);
                 break;
             case '2':
                 cout << "Podaj nowe nazwisko: ";
-                cin >> adresaci[id - 1].nazwisko;
+                itr -> nazwisko =  wczytajLinie();
+                zapisanieKsiazkiDoPliku(adresaci);
                 break;
             case '3':
                 cout << "Podaj nowy numer telefonu: ";
-                cin >> adresaci[id - 1].nrTelefonu;
+                itr -> nrTelefonu =  wczytajLinie();
+                zapisanieKsiazkiDoPliku(adresaci);
                 break;
             case '4':
                 cout << "Podaj nowy email: ";
-                cin >> adresaci[id - 1].email;
+                itr -> email =  wczytajLinie();
+                zapisanieKsiazkiDoPliku(adresaci);
                 break;
             case '5':
                 cout << "Podaj nowy adres zamieszkania: ";
-                cin >> adresaci[id - 1].adres;
+                itr -> adres =  wczytajLinie();
+                zapisanieKsiazkiDoPliku(adresaci);
                 break;
             case '6':
                 cout << endl << "Powrot do menu uzytkownika" << endl << endl;
@@ -327,7 +336,8 @@ void edytujAdresata(vector <Adresat> &adresaci)
                 cout << endl << "Nie ma takiej opcji w menu! Powrot do menu uzytkownika." << endl << endl;
                 break;
             }
-    zapisanieKsiazkiDoPliku(adresaci);
+        }
+    }
     cout << "Zmiany zostaly dokonane. Nacisnij dowolny klawisz.";
     system("read");
         
