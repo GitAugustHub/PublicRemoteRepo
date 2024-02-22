@@ -350,6 +350,18 @@ void edytujAdresata(vector <Adresat> &adresaci)
         
 }
 
+void zmianaHasla()
+{
+    cout << "Zmiana hasla" << endl;
+    czekajNaWcisniecieKlawisza();
+}
+
+void wylogowanieUzytkownika()
+{
+    cout << "Wylogowanie" << endl;
+    czekajNaWcisniecieKlawisza();
+}
+
 void logowanieUzytkownika() 
 { // aktualnie uruchamia ksiazke bez funkcjonalnosci logowania
   char wybor;
@@ -409,17 +421,6 @@ void logowanieUzytkownika()
 void rejestracjaNowegoUzytkownika()
 {
     cout << "------ REJESTRACJA NOWEGO UZYTKOWNIKA ------" << endl;
-}
-
-void zmianaHasla()
-{
-    cout << "Zmiana hasla" << endl;
-    czekajNaWcisniecieKlawisza();
-}
-void wylogowanieUzytkownika()
-{
-    cout << "Wylogowanie" << endl;
-    czekajNaWcisniecieKlawisza();
 }
 
 int main()
