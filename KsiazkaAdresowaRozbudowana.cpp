@@ -14,6 +14,12 @@ int id;
 string imie, nazwisko, nrTelefonu, email, adres;
 };
 
+struct Uzytkownik
+{
+int idUzytkownika;
+string nazwa, haslo;
+};
+
 string wczytajLinie()
 {
   string wejscie = "";
@@ -123,8 +129,6 @@ vector <Adresat> wczytywanieZnajomychDoStruktury(const string nazwaPliku)
   Adresat adresat;
   string id;
   string liniaZDanymi = "";
-  string pojedynczaDanaAdresata = "";
-  int numerPojedynczejDanejAdresata = 1;
   
   ifstream plik(nazwaPliku);
 
@@ -150,6 +154,35 @@ vector <Adresat> wczytywanieZnajomychDoStruktury(const string nazwaPliku)
     }
     plik.close();
     return adresaci;
+}
+
+vector <Uzytkownik> wczytywanieUzytkownikowDoStruktury(const string nazwaPliku)
+{
+  vector <Uzytkownik> uzytkownicy;
+  Uzytkownik uzytkownik;
+  string idUzytkownika;
+  string liniaZDanymi = "";
+  
+  ifstream plik(nazwaPliku);
+
+  if (!plik.is_open()) 
+    {
+        cerr << "Nie udalo sie otworzyc pliku " << nazwaPliku << endl;
+        return uzytkownicy; // Zwrocenie pustego wektora w przypadku błedu
+    }
+
+    while (getline (plik, liniaZDanymi)) 
+    {
+        stringstream ss(liniaZDanymi);
+        getline(ss, idUzytkownika, '|');
+        uzytkownik.idUzytkownika = atoi(idUzytkownika.c_str());
+        getline(ss, uzytkownik.nazwa, '|');
+        getline(ss, uzytkownik.haslo, '|');
+        
+    uzytkownicy.push_back(uzytkownik);
+    }
+    plik.close();
+    return uzytkownicy;
 }
 
 void wyszukajOsobePoImieniu(vector <Adresat> &adresaci)
@@ -317,9 +350,8 @@ void edytujAdresata(vector <Adresat> &adresaci)
         
 }
 
-int main()
-{
-  int idOsoby = 0;
+void logowanieUzytkownika() 
+{ // aktualnie uruchamia ksiazke bez funkcjonalnosci logowania
   char wybor;
   string nazwaPliku = "Ksiazka_adresowa.txt";
   vector <Adresat> adresaci = wczytywanieZnajomychDoStruktury(nazwaPliku); 
@@ -364,6 +396,44 @@ int main()
             break;
       }
     }
+}
+
+void rejestracjaNowegoUzytkownika()
+{
+    cout << "------ REJESTRACJA NOWEGO UZYTKOWNIKA ------" << endl;
+}
+
+int main()
+{
+  char wybor;
+  string nazwaPliku = "Uzytkownicy.txt";
+  // vector <Uzytkownik> uzytkownicy = wczytywanieUzytkownikowDoStruktury(nazwaPliku); 
+
+  while(true)
+    {
+      czyscEkran();
+      cout << "Ksiazka adresowa" << endl << endl;
+      cout << "1. Logowanie" << endl;
+      cout << "2. Rejestracja" << endl;
+      cout << "9. Zakoncz program" << endl << endl;
+      cout << "Wybierz numer i wciśnij ENTER" << endl;
+      
+      wybor = wczytajZnak();
+
+      switch (wybor)
+      {
+        case '1':
+            logowanieUzytkownika();
+            break;
+        case '2':
+            rejestracjaNowegoUzytkownika();
+            break;
+        case '9':
+            exit(0);
+            break;
+      }
+    }
 
   return 0;
 }
+
