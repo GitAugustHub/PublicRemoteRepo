@@ -366,6 +366,8 @@ void logowanieUzytkownika()
       cout << "4. Wyswietl wszystkie zapisane kontakty" << endl;
       cout << "5. Usun adresata" << endl;
       cout << "6. Edytuj adresata" << endl;
+      cout << "7. Zmien haslo" << endl;
+      cout << "8. Wyloguj sie" << endl;
       cout << "9. Zakoncz program" << endl << endl;
       cout << "Wybierz numer i wciśnij ENTER" << endl;
       
@@ -391,6 +393,12 @@ void logowanieUzytkownika()
         case '6':
             edytujAdresata(adresaci);
             break;
+        case '7':
+            zmianaHasla();
+            break;
+        case '8':
+            wylogowanieUzytkownika();
+            break;
         case '9':
             exit(0);
             break;
@@ -401,6 +409,17 @@ void logowanieUzytkownika()
 void rejestracjaNowegoUzytkownika()
 {
     cout << "------ REJESTRACJA NOWEGO UZYTKOWNIKA ------" << endl;
+}
+
+void zmianaHasla()
+{
+    cout << "Zmiana hasla" << endl;
+    czekajNaWcisniecieKlawisza();
+}
+void wylogowanieUzytkownika()
+{
+    cout << "Wylogowanie" << endl;
+    czekajNaWcisniecieKlawisza();
 }
 
 int main()
