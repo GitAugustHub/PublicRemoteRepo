@@ -17,7 +17,7 @@ string imie, nazwisko, nrTelefonu, email, adres;
 struct Uzytkownik
 {
 int idUzytkownika;
-string nazwa, haslo;
+string nazwaUzytkownika, haslo;
 };
 
 string wczytajLinie()
@@ -88,6 +88,28 @@ void zapisanieKsiazkiDoPliku(const vector <Adresat> &adresaci)
     plik.close();
   }
 }
+
+void zapisanieUzytkownikaDoPliku(const vector <Uzytkownik> &uzytkownicy)
+{
+    fstream plik;
+    plik.open("Uzytkownicy.txt", ios::out);
+    if (plik.good() == false) 
+    {
+        cout << "Plik z lista uzytkownikow nie istnieje!" << endl;
+        czekajNaWcisniecieKlawisza();
+    }  
+    else 
+    {
+        for (int i = 0; i < uzytkownicy.size(); ++i)
+        {
+        plik << uzytkownicy[i].idUzytkownika << "|";
+        plik << uzytkownicy[i].nazwaUzytkownika << "|";
+        plik << uzytkownicy[i].haslo << "|" << endl;
+        }
+    plik.close();
+  }
+}
+
 
 void dodanieOsobyDoKsiazkiAdresowej(vector <Adresat> &adresaci)
 {
@@ -176,7 +198,7 @@ vector <Uzytkownik> wczytywanieUzytkownikowDoStruktury(const string nazwaPliku)
         stringstream ss(liniaZDanymi);
         getline(ss, idUzytkownika, '|');
         uzytkownik.idUzytkownika = atoi(idUzytkownika.c_str());
-        getline(ss, uzytkownik.nazwa, '|');
+        getline(ss, uzytkownik.nazwaUzytkownika, '|');
         getline(ss, uzytkownik.haslo, '|');
         
     uzytkownicy.push_back(uzytkownik);
@@ -418,16 +440,41 @@ void logowanieUzytkownika()
     }
 }
 
-void rejestracjaNowegoUzytkownika()
+void rejestracjaNowegoUzytkownika(vector <Uzytkownik> &uzytkownicy)
 {
-    cout << "------ REJESTRACJA NOWEGO UZYTKOWNIKA ------" << endl;
+  Uzytkownik uzytkownik;
+  string nazwaUzytkownika, haslo;
+  czyscEkran();
+
+  if (uzytkownicy.empty() == true)
+  {
+    uzytkownik.idUzytkownika = 1;
+  }
+  else
+  {
+    uzytkownik.idUzytkownika = uzytkownicy.back().idUzytkownika + 1;
+  }
+  cout << "------ REJESTRACJA NOWEGO UZYTKOWNIKA ------" << endl;
+  cout << "Podaj nazwe nowego uzytkownika: "; 
+  uzytkownik.nazwaUzytkownika = wczytajLinie();
+  cout << "Podaj haslo: "; 
+  uzytkownik.haslo = wczytajLinie();
+
+  uzytkownicy.push_back(uzytkownik);
+
+  zapisanieUzytkownikaDoPliku(uzytkownicy); 
+  
+  cout << "Dodano nowego uzytkownika" << endl;
+  czekajNaWcisniecieKlawisza();
 }
+
+
 
 int main()
 {
   char wybor;
   string nazwaPliku = "Uzytkownicy.txt";
-  // vector <Uzytkownik> uzytkownicy = wczytywanieUzytkownikowDoStruktury(nazwaPliku); 
+  vector <Uzytkownik> uzytkownicy = wczytywanieUzytkownikowDoStruktury(nazwaPliku); 
 
   while(true)
     {
@@ -446,7 +493,7 @@ int main()
             logowanieUzytkownika();
             break;
         case '2':
-            rejestracjaNowegoUzytkownika();
+            rejestracjaNowegoUzytkownika(uzytkownicy);
             break;
         case '9':
             exit(0);
