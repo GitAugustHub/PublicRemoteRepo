@@ -266,7 +266,7 @@ void wyszukajOsobePoNazwisku(vector <Adresat> &adresaci)
         }
 }
 
-void wyswietlKsiazkeAdresowa(vector <Adresat> &adresaci)
+void wyswietlKsiazkeAdresowa(vector <Adresat> &adresaci, int idZalogowanegoUzytkownika)
 {
   czyscEkran();
 
@@ -279,12 +279,16 @@ void wyswietlKsiazkeAdresowa(vector <Adresat> &adresaci)
     cout << "Ksiazka adresowa:" << endl;
     for (int i = 0; i < adresaci.size(); ++i) 
     {
-        cout << adresaci[i].id << endl;
-        cout << "Imie: " << adresaci[i].imie << endl;
-        cout << "Nazwisko: " << adresaci[i].nazwisko << endl;
-        cout << "Numer telefonu: " << adresaci[i].nrTelefonu << endl;
-        cout << "Email: " << adresaci[i].email << endl;
-        cout << "Adres: " << adresaci[i].adres << endl << endl;    
+        if (adresaci[i].idUzytkownika == idZalogowanegoUzytkownika)
+        {
+            cout << adresaci[i].id << endl;
+            cout << "Imie: " << adresaci[i].imie << endl;
+            cout << "Nazwisko: " << adresaci[i].nazwisko << endl;
+            cout << "Numer telefonu: " << adresaci[i].nrTelefonu << endl;
+            cout << "Email: " << adresaci[i].email << endl;
+            cout << "Adres: " << adresaci[i].adres << endl << endl;  
+        }
+           
     }
   czekajNaWcisniecieKlawisza();
 }
@@ -456,7 +460,7 @@ void uruchomienieKsiazkiAdresowej(vector <Uzytkownik> &uzytkownicy, vector<Adres
             wyszukajOsobePoNazwisku(adresaci);
             break;
         case '4':
-            wyswietlKsiazkeAdresowa(adresaci);
+            wyswietlKsiazkeAdresowa(adresaci, idZalogowanegoUzytkownika);
             break;
         case '5':
             usunAdresataOPodanymId(adresaci);
