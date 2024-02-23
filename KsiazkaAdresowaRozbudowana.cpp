@@ -18,6 +18,7 @@ struct Uzytkownik
 {
 int idUzytkownika;
 string nazwaUzytkownika, haslo;
+bool zalogowany;
 };
 
 string wczytajLinie()
@@ -53,22 +54,6 @@ void czekajNaWcisniecieKlawisza()
 {
     cout << "Nacisnij klawisz ENTER by kontynuowac...";
     cin.ignore(numeric_limits <streamsize> :: max(), '\n');
-}
-
-int czyUzytkownikIstnieje(vector<Uzytkownik> &uzytkownicy, string nazwaUzytkownika, string haslo)
-{
-    int idZalogowanegoUzytkownika = 0;
-    for (Uzytkownik &uzytkownik : uzytkownicy)
-    {
-        if (uzytkownik.nazwaUzytkownika == nazwaUzytkownika && uzytkownik.haslo == haslo)
-        {
-            idZalogowanegoUzytkownika = uzytkownik.idUzytkownika;
-            // sprawdzenie czy zostal wczytany uzytkownik
-            cout << "ID Uzytkownika to" << idZalogowanegoUzytkownika << endl;
-            czekajNaWcisniecieKlawisza();
-        }
-    }
-    return idZalogowanegoUzytkownika;
 }
 
 void wyswietlKontakt(Adresat adresat)
@@ -395,12 +380,12 @@ void zmianaHasla()
     czekajNaWcisniecieKlawisza();
 }
 
-void wylogowanieUzytkownika(int idZalogowanegoUzytkownika)
+void wylogowanieUzytkownika(vector <Uzytkownik> &uzytkownicy, int idZalogowanegoUzytkownika)
 {
-    // for (Uzytkownik &uzytkownik : uzytkownicy)
-    // {
-    //     uzytkownik.zalogowany = false;
-    // }
+    for (Uzytkownik &uzytkownik : uzytkownicy)
+    {
+        uzytkownik.zalogowany = false;
+    }
     cout << "Wylogowano pomyslnie!" << endl;
     czekajNaWcisniecieKlawisza();
             
@@ -417,13 +402,18 @@ int logowanieUzytkownika(vector <Uzytkownik> &uzytkownicy)
     cout << "Podaj haslo: ";
     haslo = wczytajLinie();
 
-    idZalogowanegoUzytkownika = czyUzytkownikIstnieje(uzytkownicy, nazwaUzytkownika, haslo);
-    if (idZalogowanegoUzytkownika > 0)
+    for (Uzytkownik &uzytkownik : uzytkownicy)
     {
-        cout << "Zalogowano pomyslnie!" << endl;
-        czekajNaWcisniecieKlawisza();
+        if (uzytkownik.nazwaUzytkownika == nazwaUzytkownika && uzytkownik.haslo == haslo)
+        {
+            uzytkownik.zalogowany = true;
+            idZalogowanegoUzytkownika = uzytkownik.idUzytkownika;
+            cout << "Zalogowano pomyslnie!" << endl;
+            czekajNaWcisniecieKlawisza();
+            break;
+        }
     }
-    else
+    if (idZalogowanegoUzytkownika == 0)
     {
         cout << "Niepoprawna nazwa uzytkownika lub haslo!" << endl;
         czekajNaWcisniecieKlawisza();
@@ -431,11 +421,11 @@ int logowanieUzytkownika(vector <Uzytkownik> &uzytkownicy)
     return idZalogowanegoUzytkownika;
 }
 
-void uruchomienieKsiazkiAdresowej(vector<Adresat> &adresaci, int idZalogowanegoUzytkownika) 
+void uruchomienieKsiazkiAdresowej(vector <Uzytkownik> &uzytkownicy, vector<Adresat> &adresaci, int idZalogowanegoUzytkownika) 
 { 
   char wybor;
   string nazwaPliku = "Ksiazka_adresowa.txt";
-  
+
   while(true)
     {
       czyscEkran();
@@ -477,8 +467,8 @@ void uruchomienieKsiazkiAdresowej(vector<Adresat> &adresaci, int idZalogowanegoU
             zmianaHasla();
             break;
         case '8':
-            wylogowanieUzytkownika(idZalogowanegoUzytkownika);
-            break;
+            wylogowanieUzytkownika(uzytkownicy, idZalogowanegoUzytkownika);
+            return;
         case '9':
             exit(0);
             break;
@@ -514,8 +504,6 @@ void rejestracjaNowegoUzytkownika(vector <Uzytkownik> &uzytkownicy)
   czekajNaWcisniecieKlawisza();
 }
 
-
-
 int main()
 {
   char wybor;
@@ -543,7 +531,7 @@ int main()
             idZalogowanegoUzytkownika = logowanieUzytkownika(uzytkownicy);
             if (idZalogowanegoUzytkownika > 0)
             {
-                uruchomienieKsiazkiAdresowej(adresaci, idZalogowanegoUzytkownika);
+                uruchomienieKsiazkiAdresowej(uzytkownicy, adresaci, idZalogowanegoUzytkownika);
             }
             break;
         case '2':
