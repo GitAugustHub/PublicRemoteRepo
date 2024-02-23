@@ -289,40 +289,50 @@ void wyswietlKsiazkeAdresowa(vector <Adresat> &adresaci)
   czekajNaWcisniecieKlawisza();
 }
 
-void usunAdresataOPodanymId(vector <Adresat> &adresaci)
+void usunAdresataOPodanymId(vector <Adresat> &adresaci, int idZalogowanegoUzytkownika)
 {
     int id;
+    bool znalezionoAdresata = false;
+
     cout << "Podaj ID adresata, ktory ma zostac usuniety: ";
     cin >> id;
     for (vector <Adresat> :: iterator itr = adresaci.begin(); itr != adresaci.end(); itr++)
     {
-        if (itr -> id == id)
+        if (itr -> id == id && itr -> idUzytkownika == idZalogowanegoUzytkownika)
         {
             adresaci.erase(itr);
             zapisanieKsiazkiDoPliku(adresaci);
             cout << "Adresat zostal usuniety. Nacisnij dowolny klawisz.";
             czekajNaWcisniecieKlawisza();
+            znalezionoAdresata = true;
+            break; 
         }
-        if (itr == adresaci.end())
-        {
-            break;
-        }
+    
+    }
+
+    if (!znalezionoAdresata)
+    {
+        cout << "Nie znaleziono adresata o podanym ID w Twojej książce adresowej." << endl;
+        sleep(3);
     }
     
 }
 
-void edytujAdresata(vector <Adresat> &adresaci)
+void edytujAdresata(vector <Adresat> &adresaci, int idZalogowanegoUzytkownika)
 {
     int idWybranegoAdresata;
     char wybor;
+    bool znalezionoAdresata = false;
+
     cout << "Podaj ID adresata, ktory ma zostac edytowany: ";
     cin >> idWybranegoAdresata;
 
     for (vector <Adresat> :: iterator itr = adresaci.begin(); itr != adresaci.end(); itr++)
     {
-        if (itr -> id == idWybranegoAdresata)
+        if (itr -> id == idWybranegoAdresata && itr -> idUzytkownika == idZalogowanegoUzytkownika)
         {
         czyscEkran();
+        znalezionoAdresata = true;
         cout << "Edycja wybranego adresata. Wybierz dane do aktualizacji:" << endl << endl;
         cout << "1. Imie." << endl;
         cout << "2. Nazwisko" << endl;
@@ -370,8 +380,12 @@ void edytujAdresata(vector <Adresat> &adresaci)
             }
         }
     }
-    cout << "Zmiany zostaly dokonane.";
-    czekajNaWcisniecieKlawisza();
+    
+    if (!znalezionoAdresata)
+    {
+        cout << "Nie znaleziono adresata o podanym ID w Twojej książce adresowej." << endl;
+        sleep(3);
+    }
         
 }
 
@@ -459,10 +473,10 @@ void uruchomienieKsiazkiAdresowej(vector <Uzytkownik> &uzytkownicy, vector<Adres
             wyswietlKsiazkeAdresowa(adresaci);
             break;
         case '5':
-            usunAdresataOPodanymId(adresaci);
+            usunAdresataOPodanymId(adresaci, idZalogowanegoUzytkownika);
             break;
         case '6':
-            edytujAdresata(adresaci);
+            edytujAdresata(adresaci, idZalogowanegoUzytkownika);
             break;
         case '7':
             zmianaHasla();
