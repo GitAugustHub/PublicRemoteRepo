@@ -10,7 +10,7 @@ using namespace std;
 
 struct Adresat 
 {
-int id;
+int id, idUzytkownika;
 string imie, nazwisko, nrTelefonu, email, adres;
 };
 
@@ -53,6 +53,22 @@ void czekajNaWcisniecieKlawisza()
 {
     cout << "Nacisnij klawisz ENTER by kontynuowac...";
     cin.ignore(numeric_limits <streamsize> :: max(), '\n');
+}
+
+int czyUzytkownikIstnieje(vector<Uzytkownik> &uzytkownicy, string nazwaUzytkownika, string haslo)
+{
+    int idZalogowanegoUzytkownika = 0;
+    for (Uzytkownik &uzytkownik : uzytkownicy)
+    {
+        if (uzytkownik.nazwaUzytkownika == nazwaUzytkownika && uzytkownik.haslo == haslo)
+        {
+            idZalogowanegoUzytkownika = uzytkownik.idUzytkownika;
+            // sprawdzenie czy zostal wczytany uzytkownik
+            cout << "ID Uzytkownika to" << idZalogowanegoUzytkownika << endl;
+            czekajNaWcisniecieKlawisza();
+        }
+    }
+    return idZalogowanegoUzytkownika;
 }
 
 void wyswietlKontakt(Adresat adresat)
@@ -110,8 +126,7 @@ void zapisanieUzytkownikaDoPliku(const vector <Uzytkownik> &uzytkownicy)
   }
 }
 
-
-void dodanieOsobyDoKsiazkiAdresowej(vector <Adresat> &adresaci)
+void dodanieOsobyDoKsiazkiAdresowej(vector <Adresat> &adresaci, int idZalogowanegoUzytkownika)
 {
   Adresat adresat;
   string imie, nazwisko, nrTelefonu, email, adres;
@@ -125,7 +140,7 @@ void dodanieOsobyDoKsiazkiAdresowej(vector <Adresat> &adresaci)
   {
     adresat.id = adresaci.back().id + 1;
   }
-
+  adresat.idUzytkownika = idZalogowanegoUzytkownika;
   cout << "Podaj imie: "; 
   adresat.imie = wczytajLinie();
   cout << "Podaj nazwisko: "; 
@@ -149,7 +164,7 @@ vector <Adresat> wczytywanieZnajomychDoStruktury(const string nazwaPliku)
 {
   vector <Adresat> adresaci;
   Adresat adresat;
-  string id;
+  string id, idUzytkownika;
   string liniaZDanymi = "";
   
   ifstream plik(nazwaPliku);
@@ -166,6 +181,8 @@ vector <Adresat> wczytywanieZnajomychDoStruktury(const string nazwaPliku)
         stringstream ss(liniaZDanymi);
         getline(ss, id, '|');
         adresat.id = atoi(id.c_str());
+        getline(ss, idUzytkownika, '|');
+        adresat.idUzytkownika = atoi(idUzytkownika.c_str());
         getline(ss, adresat.imie, '|');
         getline(ss, adresat.nazwisko, '|');
         getline(ss, adresat.nrTelefonu, '|');
@@ -378,18 +395,47 @@ void zmianaHasla()
     czekajNaWcisniecieKlawisza();
 }
 
-void wylogowanieUzytkownika()
+void wylogowanieUzytkownika(int idZalogowanegoUzytkownika)
 {
-    cout << "Wylogowanie" << endl;
+    // for (Uzytkownik &uzytkownik : uzytkownicy)
+    // {
+    //     uzytkownik.zalogowany = false;
+    // }
+    cout << "Wylogowano pomyslnie!" << endl;
     czekajNaWcisniecieKlawisza();
+            
 }
 
-void logowanieUzytkownika() 
-{ // aktualnie uruchamia ksiazke bez funkcjonalnosci logowania
+int logowanieUzytkownika(vector <Uzytkownik> &uzytkownicy)
+{
+    int idZalogowanegoUzytkownika = 0;
+    string nazwaUzytkownika, haslo;
+    czyscEkran();
+    cout << "------ LOGOWANIE ------" << endl;
+    cout << "Podaj nazwe uzytkownika: ";
+    nazwaUzytkownika = wczytajLinie();
+    cout << "Podaj haslo: ";
+    haslo = wczytajLinie();
+
+    idZalogowanegoUzytkownika = czyUzytkownikIstnieje(uzytkownicy, nazwaUzytkownika, haslo);
+    if (idZalogowanegoUzytkownika > 0)
+    {
+        cout << "Zalogowano pomyslnie!" << endl;
+        czekajNaWcisniecieKlawisza();
+    }
+    else
+    {
+        cout << "Niepoprawna nazwa uzytkownika lub haslo!" << endl;
+        czekajNaWcisniecieKlawisza();
+    }
+    return idZalogowanegoUzytkownika;
+}
+
+void uruchomienieKsiazkiAdresowej(vector<Adresat> &adresaci, int idZalogowanegoUzytkownika) 
+{ 
   char wybor;
   string nazwaPliku = "Ksiazka_adresowa.txt";
-  vector <Adresat> adresaci = wczytywanieZnajomychDoStruktury(nazwaPliku); 
-
+  
   while(true)
     {
       czyscEkran();
@@ -410,7 +456,7 @@ void logowanieUzytkownika()
       switch (wybor)
       {
         case '1':
-            dodanieOsobyDoKsiazkiAdresowej(adresaci);
+            dodanieOsobyDoKsiazkiAdresowej(adresaci, idZalogowanegoUzytkownika);
             break;
         case '2':
             wyszukajOsobePoImieniu(adresaci);
@@ -431,7 +477,7 @@ void logowanieUzytkownika()
             zmianaHasla();
             break;
         case '8':
-            wylogowanieUzytkownika();
+            wylogowanieUzytkownika(idZalogowanegoUzytkownika);
             break;
         case '9':
             exit(0);
@@ -473,8 +519,12 @@ void rejestracjaNowegoUzytkownika(vector <Uzytkownik> &uzytkownicy)
 int main()
 {
   char wybor;
-  string nazwaPliku = "Uzytkownicy.txt";
-  vector <Uzytkownik> uzytkownicy = wczytywanieUzytkownikowDoStruktury(nazwaPliku); 
+  int idZalogowanegoUzytkownika;
+  string nazwaPlikuZUzytkownikami = "Uzytkownicy.txt";
+  vector <Uzytkownik> uzytkownicy = wczytywanieUzytkownikowDoStruktury(nazwaPlikuZUzytkownikami); 
+
+  string nazwaPlikuZPelnaKsiazkaAdresowa = "Ksiazka_adresowa.txt";
+  vector <Adresat> adresaci = wczytywanieZnajomychDoStruktury(nazwaPlikuZPelnaKsiazkaAdresowa);
 
   while(true)
     {
@@ -490,7 +540,11 @@ int main()
       switch (wybor)
       {
         case '1':
-            logowanieUzytkownika();
+            idZalogowanegoUzytkownika = logowanieUzytkownika(uzytkownicy);
+            if (idZalogowanegoUzytkownika > 0)
+            {
+                uruchomienieKsiazkiAdresowej(adresaci, idZalogowanegoUzytkownika);
+            }
             break;
         case '2':
             rejestracjaNowegoUzytkownika(uzytkownicy);
