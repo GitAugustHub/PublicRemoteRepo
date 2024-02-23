@@ -210,7 +210,7 @@ vector <Uzytkownik> wczytywanieUzytkownikowDoStruktury(const string nazwaPliku)
     return uzytkownicy;
 }
 
-void wyszukajOsobePoImieniu(vector <Adresat> &adresaci)
+void wyszukajOsobePoImieniu(vector <Adresat> &adresaci, int idZalogowanegoUzytkownika)
 {
     string imie;
     bool osobaOdnaleziona = false;
@@ -221,7 +221,7 @@ void wyszukajOsobePoImieniu(vector <Adresat> &adresaci)
 
         for (const Adresat adresat : adresaci) 
         {
-            if (adresat.imie == imie) 
+            if (adresat.idUzytkownika == idZalogowanegoUzytkownika && adresat.imie == imie) 
             {
                 cout << "Znalazlem osobe o imieniu " << imie << endl;
                 sleep(1);
@@ -238,7 +238,7 @@ void wyszukajOsobePoImieniu(vector <Adresat> &adresaci)
         }
 }
 
-void wyszukajOsobePoNazwisku(vector <Adresat> &adresaci)
+void wyszukajOsobePoNazwisku(vector <Adresat> &adresaci, int idZalogowanegoUzytkownika)
 {
     string nazwisko;
     bool osobaOdnaleziona = false;
@@ -249,7 +249,7 @@ void wyszukajOsobePoNazwisku(vector <Adresat> &adresaci)
         
         for (const Adresat adresat : adresaci) 
         {
-            if (adresat.nazwisko == nazwisko) 
+            if (adresat.idUzytkownika == idZalogowanegoUzytkownika && adresat.nazwisko == nazwisko) 
             {
                 cout << "Znalazlem osobe o nazwisku " << nazwisko << endl;
                 sleep(1);
@@ -266,7 +266,7 @@ void wyszukajOsobePoNazwisku(vector <Adresat> &adresaci)
         }
 }
 
-void wyswietlKsiazkeAdresowa(vector <Adresat> &adresaci)
+void wyswietlKsiazkeAdresowa(vector <Adresat> &adresaci, int idZalogowanegoUzytkownika)
 {
   czyscEkran();
 
@@ -279,12 +279,16 @@ void wyswietlKsiazkeAdresowa(vector <Adresat> &adresaci)
     cout << "Ksiazka adresowa:" << endl;
     for (int i = 0; i < adresaci.size(); ++i) 
     {
-        cout << adresaci[i].id << endl;
-        cout << "Imie: " << adresaci[i].imie << endl;
-        cout << "Nazwisko: " << adresaci[i].nazwisko << endl;
-        cout << "Numer telefonu: " << adresaci[i].nrTelefonu << endl;
-        cout << "Email: " << adresaci[i].email << endl;
-        cout << "Adres: " << adresaci[i].adres << endl << endl;    
+        if (adresaci[i].idUzytkownika == idZalogowanegoUzytkownika)
+        {
+            cout << adresaci[i].id << endl;
+            cout << "Imie: " << adresaci[i].imie << endl;
+            cout << "Nazwisko: " << adresaci[i].nazwisko << endl;
+            cout << "Numer telefonu: " << adresaci[i].nrTelefonu << endl;
+            cout << "Email: " << adresaci[i].email << endl;
+            cout << "Adres: " << adresaci[i].adres << endl << endl;  
+        }
+           
     }
   czekajNaWcisniecieKlawisza();
 }
@@ -389,21 +393,42 @@ void edytujAdresata(vector <Adresat> &adresaci, int idZalogowanegoUzytkownika)
         
 }
 
-void zmianaHasla()
+void zmianaHasla(vector<Uzytkownik> &uzytkownicy, int idZalogowanegoUzytkownika)
 {
-    cout << "Zmiana hasla jeszcze nie dziala" << endl;
+    string noweHaslo;
+    cout << "Podaj nowe haslo: ";
+    noweHaslo = wczytajLinie();
+
+    for (Uzytkownik &uzytkownik : uzytkownicy)
+    {
+        if (uzytkownik.idUzytkownika == idZalogowanegoUzytkownika)
+        {
+            uzytkownik.haslo = noweHaslo;
+            zapisanieUzytkownikaDoPliku(uzytkownicy); // Zapisz zmiany do pliku
+            cout << "Haslo zostalo zmienione pomyslnie!" << endl;
+            czekajNaWcisniecieKlawisza();
+            return;
+        }
+    }
+
+    cout << "Nie udalo sie zmienic hasla. Nie znaleziono zalogowanego uzytkownika." << endl;
     czekajNaWcisniecieKlawisza();
 }
 
-void wylogowanieUzytkownika(vector <Uzytkownik> &uzytkownicy, int idZalogowanegoUzytkownika)
+void wylogowanieUzytkownika(vector<Uzytkownik> &uzytkownicy, int idZalogowanegoUzytkownika)
 {
     for (Uzytkownik &uzytkownik : uzytkownicy)
     {
-        uzytkownik.zalogowany = false;
+        if (uzytkownik.idUzytkownika == idZalogowanegoUzytkownika)
+        {
+            uzytkownik.zalogowany = false;
+            cout << "Wylogowano pomyslnie!" << endl;
+            czekajNaWcisniecieKlawisza();
+            return;
+        }
     }
-    cout << "Wylogowano pomyslnie!" << endl;
+    cout << "Blad podczas wylogowywania. Nie znaleziono zalogowanego uzytkownika." << endl;
     czekajNaWcisniecieKlawisza();
-            
 }
 
 int logowanieUzytkownika(vector <Uzytkownik> &uzytkownicy)
@@ -451,7 +476,7 @@ void uruchomienieKsiazkiAdresowej(vector <Uzytkownik> &uzytkownicy, vector<Adres
       cout << "4. Wyswietl wszystkie zapisane kontakty" << endl;
       cout << "5. Usun adresata" << endl;
       cout << "6. Edytuj adresata" << endl;
-      cout << "7. Zmien haslo - funkcja jeszcze nie dziala!" << endl;
+      cout << "7. Zmien haslo" << endl;
       cout << "8. Wyloguj sie" << endl;
       cout << "9. Zakoncz program" << endl << endl;
       cout << "Wybierz numer i wciśnij ENTER" << endl;
@@ -464,13 +489,13 @@ void uruchomienieKsiazkiAdresowej(vector <Uzytkownik> &uzytkownicy, vector<Adres
             dodanieOsobyDoKsiazkiAdresowej(adresaci, idZalogowanegoUzytkownika);
             break;
         case '2':
-            wyszukajOsobePoImieniu(adresaci);
+            wyszukajOsobePoImieniu(adresaci, idZalogowanegoUzytkownika);
             break;
         case '3':
-            wyszukajOsobePoNazwisku(adresaci);
+            wyszukajOsobePoNazwisku(adresaci, idZalogowanegoUzytkownika);
             break;
         case '4':
-            wyswietlKsiazkeAdresowa(adresaci);
+            wyswietlKsiazkeAdresowa(adresaci, idZalogowanegoUzytkownika);
             break;
         case '5':
             usunAdresataOPodanymId(adresaci, idZalogowanegoUzytkownika);
@@ -479,7 +504,7 @@ void uruchomienieKsiazkiAdresowej(vector <Uzytkownik> &uzytkownicy, vector<Adres
             edytujAdresata(adresaci, idZalogowanegoUzytkownika);
             break;
         case '7':
-            zmianaHasla();
+            zmianaHasla(uzytkownicy, idZalogowanegoUzytkownika);
             break;
         case '8':
             wylogowanieUzytkownika(uzytkownicy, idZalogowanegoUzytkownika);
