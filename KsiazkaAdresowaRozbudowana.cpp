@@ -375,21 +375,42 @@ void edytujAdresata(vector <Adresat> &adresaci)
         
 }
 
-void zmianaHasla()
+void zmianaHasla(vector<Uzytkownik> &uzytkownicy, int idZalogowanegoUzytkownika)
 {
-    cout << "Zmiana hasla jeszcze nie dziala" << endl;
+    string noweHaslo;
+    cout << "Podaj nowe haslo: ";
+    noweHaslo = wczytajLinie();
+
+    for (Uzytkownik &uzytkownik : uzytkownicy)
+    {
+        if (uzytkownik.idUzytkownika == idZalogowanegoUzytkownika)
+        {
+            uzytkownik.haslo = noweHaslo;
+            zapisanieUzytkownikaDoPliku(uzytkownicy); // Zapisz zmiany do pliku
+            cout << "Haslo zostalo zmienione pomyslnie!" << endl;
+            czekajNaWcisniecieKlawisza();
+            return;
+        }
+    }
+
+    cout << "Nie udalo sie zmienic hasla. Nie znaleziono zalogowanego uzytkownika." << endl;
     czekajNaWcisniecieKlawisza();
 }
 
-void wylogowanieUzytkownika(vector <Uzytkownik> &uzytkownicy, int idZalogowanegoUzytkownika)
+void wylogowanieUzytkownika(vector<Uzytkownik> &uzytkownicy, int idZalogowanegoUzytkownika)
 {
     for (Uzytkownik &uzytkownik : uzytkownicy)
     {
-        uzytkownik.zalogowany = false;
+        if (uzytkownik.idUzytkownika == idZalogowanegoUzytkownika)
+        {
+            uzytkownik.zalogowany = false;
+            cout << "Wylogowano pomyslnie!" << endl;
+            czekajNaWcisniecieKlawisza();
+            return;
+        }
     }
-    cout << "Wylogowano pomyslnie!" << endl;
+    cout << "Blad podczas wylogowywania. Nie znaleziono zalogowanego uzytkownika." << endl;
     czekajNaWcisniecieKlawisza();
-            
 }
 
 int logowanieUzytkownika(vector <Uzytkownik> &uzytkownicy)
@@ -437,7 +458,7 @@ void uruchomienieKsiazkiAdresowej(vector <Uzytkownik> &uzytkownicy, vector<Adres
       cout << "4. Wyswietl wszystkie zapisane kontakty" << endl;
       cout << "5. Usun adresata" << endl;
       cout << "6. Edytuj adresata" << endl;
-      cout << "7. Zmien haslo - funkcja jeszcze nie dziala!" << endl;
+      cout << "7. Zmien haslo" << endl;
       cout << "8. Wyloguj sie" << endl;
       cout << "9. Zakoncz program" << endl << endl;
       cout << "Wybierz numer i wciśnij ENTER" << endl;
@@ -465,7 +486,7 @@ void uruchomienieKsiazkiAdresowej(vector <Uzytkownik> &uzytkownicy, vector<Adres
             edytujAdresata(adresaci);
             break;
         case '7':
-            zmianaHasla();
+            zmianaHasla(uzytkownicy, idZalogowanegoUzytkownika);
             break;
         case '8':
             wylogowanieUzytkownika(uzytkownicy, idZalogowanegoUzytkownika);
