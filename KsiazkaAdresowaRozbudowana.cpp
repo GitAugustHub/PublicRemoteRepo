@@ -80,6 +80,7 @@ void zapisanieKsiazkiDoPliku(const vector <Adresat> &adresaci)
         for (int i = 0; i < adresaci.size(); ++i)
         {
         plik << adresaci[i].id << "|";
+        plik << adresaci[i].idUzytkownika << "|";
         plik << adresaci[i].imie << "|";
         plik << adresaci[i].nazwisko << "|";
         plik << adresaci[i].nrTelefonu << "|";
@@ -376,7 +377,7 @@ void edytujAdresata(vector <Adresat> &adresaci)
 
 void zmianaHasla()
 {
-    cout << "Zmiana hasla" << endl;
+    cout << "Zmiana hasla jeszcze nie dziala" << endl;
     czekajNaWcisniecieKlawisza();
 }
 
@@ -436,7 +437,7 @@ void uruchomienieKsiazkiAdresowej(vector <Uzytkownik> &uzytkownicy, vector<Adres
       cout << "4. Wyswietl wszystkie zapisane kontakty" << endl;
       cout << "5. Usun adresata" << endl;
       cout << "6. Edytuj adresata" << endl;
-      cout << "7. Zmien haslo" << endl;
+      cout << "7. Zmien haslo - funkcja jeszcze nie dziala!" << endl;
       cout << "8. Wyloguj sie" << endl;
       cout << "9. Zakoncz program" << endl << endl;
       cout << "Wybierz numer i wciśnij ENTER" << endl;
