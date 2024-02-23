@@ -210,7 +210,7 @@ vector <Uzytkownik> wczytywanieUzytkownikowDoStruktury(const string nazwaPliku)
     return uzytkownicy;
 }
 
-void wyszukajOsobePoImieniu(vector <Adresat> &adresaci)
+void wyszukajOsobePoImieniu(vector <Adresat> &adresaci, int idZalogowanegoUzytkownika)
 {
     string imie;
     bool osobaOdnaleziona = false;
@@ -221,7 +221,7 @@ void wyszukajOsobePoImieniu(vector <Adresat> &adresaci)
 
         for (const Adresat adresat : adresaci) 
         {
-            if (adresat.imie == imie) 
+            if (adresat.idUzytkownika == idZalogowanegoUzytkownika && adresat.imie == imie) 
             {
                 cout << "Znalazlem osobe o imieniu " << imie << endl;
                 sleep(1);
@@ -238,7 +238,7 @@ void wyszukajOsobePoImieniu(vector <Adresat> &adresaci)
         }
 }
 
-void wyszukajOsobePoNazwisku(vector <Adresat> &adresaci)
+void wyszukajOsobePoNazwisku(vector <Adresat> &adresaci, int idZalogowanegoUzytkownika)
 {
     string nazwisko;
     bool osobaOdnaleziona = false;
@@ -249,7 +249,7 @@ void wyszukajOsobePoNazwisku(vector <Adresat> &adresaci)
         
         for (const Adresat adresat : adresaci) 
         {
-            if (adresat.nazwisko == nazwisko) 
+            if (adresat.idUzytkownika == idZalogowanegoUzytkownika && adresat.nazwisko == nazwisko) 
             {
                 cout << "Znalazlem osobe o nazwisku " << nazwisko << endl;
                 sleep(1);
@@ -450,10 +450,10 @@ void uruchomienieKsiazkiAdresowej(vector <Uzytkownik> &uzytkownicy, vector<Adres
             dodanieOsobyDoKsiazkiAdresowej(adresaci, idZalogowanegoUzytkownika);
             break;
         case '2':
-            wyszukajOsobePoImieniu(adresaci);
+            wyszukajOsobePoImieniu(adresaci, idZalogowanegoUzytkownika);
             break;
         case '3':
-            wyszukajOsobePoNazwisku(adresaci);
+            wyszukajOsobePoNazwisku(adresaci, idZalogowanegoUzytkownika);
             break;
         case '4':
             wyswietlKsiazkeAdresowa(adresaci);
